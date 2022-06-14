@@ -5,9 +5,16 @@
 
 [![CI](https://github.com/jcs-elpa/sideline-flycheck/actions/workflows/test.yml/badge.svg)](https://github.com/jcs-elpa/sideline-flycheck/actions/workflows/test.yml)
 
-## Usage
+## 🔨 Quickstart
 
+```elisp
+(leaf sideline
+  :hook (flycheck-mode-hook . sideline-mode)
+  :init
+  (setq sideline-backends-right '(sideline-flycheck)))
 
+(leaf sideline-flycheck :hook (flycheck-mode-hook . sideline-flycheck-mode))
+```
 
 ## Contribute
 

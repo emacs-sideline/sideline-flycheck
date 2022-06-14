@@ -1,4 +1,4 @@
-;;; slideline-flycheck.el --- Show flycheck errors with sideline  -*- lexical-binding: t; -*-
+;;; sideline-flycheck.el --- Show flycheck errors with sideline  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  Shen, Jen-Chieh
 ;; Created date 2022-06-14 17:10:48
@@ -8,7 +8,7 @@
 ;; Keyword: sideline flycheck
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "26.1"))
-;; URL: https://github.com/jcs-elpa/slideline-flycheck
+;; URL: https://github.com/jcs-elpa/sideline-flycheck
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -92,5 +92,5 @@ Argument COMMAND is required in sideline backend."
     (setq-local flycheck-display-errors-function sideline-flycheck--old-display-function)
     (setq sideline-flycheck--old-display-function nil))))
 
-(provide 'slideline-flycheck)
-;;; slideline-flycheck.el ends here
+(provide 'sideline-flycheck)
+;;; sideline-flycheck.el ends here

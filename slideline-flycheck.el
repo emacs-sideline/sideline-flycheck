@@ -32,9 +32,65 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
+(require 'flycheck)
 (require 'sideline)
 
+(defgroup sideline-flycheck nil
+  "Show flycheck errors with sideline."
+  :prefix "sideline-flycheck-"
+  :group 'tool
+  :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/sideline-flycheck"))
 
+(defcustom sideline-flycheck-inhibit-functions nil
+  "Functions to inhibit display of sideline flycheck."
+  :type 'hook
+  :group 'sideline-flycheck)
+
+(defvar-local sideline-flycheck--old-display-function nil
+  "The former value of `flycheck-display-errors-function'.")
+
+(defvar-local sideline-flycheck--callback nil
+  "Callback to display errors with sideline.")
+
+(defun sideline-flycheck--get-candidates (callback &rest _)
+  "Asynchronous get flycheck errors."
+  (setq sideline-flycheck--callback callback))
+
+(defun sideline-flycheck--show (errors)
+  "Display ERRORS, using sideline.el library."
+  (when (and errors
+             (not (run-hook-with-args-until-success 'sideline-flycheck-inhibit-functions))
+             sideline-flycheck--callback)
+    (funcall sideline-flycheck--callback (mapcar #'flycheck-error-message errors))))
+
+;;;###autoload
+(defun sideline-flycheck (command)
+  "Backend for sideline.
+
+Argument COMMAND is required in sideline backend."
+  (cl-case command
+    (`candidates (cons :async #'sideline-flycheck--get-candidates))))
+
+;;;###autoload
+(define-minor-mode sideline-flycheck-mode
+  "A minor mode to show Flycheck error messages in a sideline."
+  :lighter nil
+  :group 'sideline-flycheck
+  (cond
+   ;; Use our display function and remember the old one but only if we haven't
+   ;; yet configured it, to avoid activating twice.
+   ((and sideline-flycheck-mode
+         (not (eq flycheck-display-errors-function #'sideline-flycheck--show)))
+    (setq sideline-flycheck--old-display-function flycheck-display-errors-function)
+    (setq-local flycheck-display-errors-function #'sideline-flycheck--show))
+   ;; Reset the display function and remove ourselves from all hooks but only
+   ;; if the mode is still active.
+   ((and (not sideline-flycheck-mode)
+         (eq flycheck-display-errors-function #'sideline-flycheck--show))
+    (setq-local flycheck-display-errors-function sideline-flycheck--old-display-function)
+    (setq sideline-flycheck--old-display-function nil))))
 
 (provide 'slideline-flycheck)
 ;;; slideline-flycheck.el ends here

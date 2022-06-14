@@ -7,7 +7,7 @@
 ;; Description: Show flycheck errors with sideline
 ;; Keyword: sideline flycheck
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "26.1") (flycheck "0.14") (sideline "0.1.0"))
 ;; URL: https://github.com/jcs-elpa/sideline-flycheck
 
 ;; This file is NOT part of GNU Emacs.

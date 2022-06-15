@@ -7,7 +7,7 @@
 ;; Description: Show flycheck errors with sideline
 ;; Keyword: sideline flycheck
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "26.1") (flycheck "0.14") (sideline "0.1.0"))
+;; Package-Requires: ((emacs "26.1") (sideline "0.1.0") (flycheck "0.14"))
 ;; URL: https://github.com/jcs-elpa/sideline-flycheck
 
 ;; This file is NOT part of GNU Emacs.
@@ -34,8 +34,8 @@
 
 (require 'cl-lib)
 
-(require 'flycheck)
 (require 'sideline)
+(require 'flycheck)
 
 (defgroup sideline-flycheck nil
   "Show flycheck errors with sideline."
@@ -54,16 +54,8 @@
 (defvar-local sideline-flycheck--callback nil
   "Callback to display errors with sideline.")
 
-(defun sideline-flycheck--get-candidates (callback &rest _)
-  "Asynchronous get flycheck errors."
-  (setq sideline-flycheck--callback callback))
-
-(defun sideline-flycheck--show (errors)
-  "Display ERRORS, using sideline.el library."
-  (when (and errors
-             (not (run-hook-with-args-until-success 'sideline-flycheck-inhibit-functions))
-             sideline-flycheck--callback)
-    (funcall sideline-flycheck--callback (mapcar #'flycheck-error-message errors))))
+(defvar-local sideline-flycheck--cleared-p nil
+  "Set to t when ready to do next rendering in sideline.")
 
 ;;;###autoload
 (defun sideline-flycheck (command)
@@ -71,26 +63,36 @@
 
 Argument COMMAND is required in sideline backend."
   (cl-case command
-    (`candidates (cons :async #'sideline-flycheck--get-candidates))))
+    (`candidates (cons :async
+                       (lambda (callback &rest _)
+                         (setq sideline-flycheck--callback callback))))))
+
+(defun sideline-flycheck--show (errors)
+  "Display ERRORS, using sideline.el library."
+  (when (and errors
+             (not (run-hook-with-args-until-success 'sideline-flycheck-inhibit-functions))
+             sideline-flycheck--callback
+             sideline-flycheck--cleared-p)
+    (setq sideline-flycheck--cleared-p nil)
+    (funcall sideline-flycheck--callback (mapcar #'flycheck-error-message errors))))
+
+(defun sideline-flycheck--reset ()
+  "After sideline is reset."
+  (setq sideline-flycheck--cleared-p t))
 
 ;;;###autoload
-(define-minor-mode sideline-flycheck-mode
-  "A minor mode to show Flycheck error messages in a sideline."
-  :lighter nil
-  :group 'sideline-flycheck
+(defun sideline-flycheck-setup ()
+  "Setup for `flycheck-mode'."
   (cond
-   ;; Use our display function and remember the old one but only if we haven't
-   ;; yet configured it, to avoid activating twice.
-   ((and sideline-flycheck-mode
-         (not (eq flycheck-display-errors-function #'sideline-flycheck--show)))
+   (flycheck-mode
     (setq sideline-flycheck--old-display-function flycheck-display-errors-function)
-    (setq-local flycheck-display-errors-function #'sideline-flycheck--show))
-   ;; Reset the display function and remove ourselves from all hooks but only
-   ;; if the mode is still active.
-   ((and (not sideline-flycheck-mode)
-         (eq flycheck-display-errors-function #'sideline-flycheck--show))
+    (setq-local flycheck-display-errors-function #'sideline-flycheck--show)
+    (add-hook 'sideline-reset-hook #'sideline-flycheck--reset nil t))
+   (t
     (setq-local flycheck-display-errors-function sideline-flycheck--old-display-function)
-    (setq sideline-flycheck--old-display-function nil))))
+    (setq sideline-flycheck--old-display-function nil)
+    (remove-hook 'sideline-reset-hook #'sideline-flycheck--reset t)
+    (sideline-render))))  ; rerender sideline once
 
 (provide 'sideline-flycheck)
 ;;; sideline-flycheck.el ends here

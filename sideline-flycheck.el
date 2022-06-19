@@ -73,7 +73,14 @@ Argument COMMAND is required in sideline backend."
              sideline-flycheck--callback
              sideline-flycheck--cleared-p)
     (setq sideline-flycheck--cleared-p nil)
-    (funcall sideline-flycheck--callback (mapcar #'flycheck-error-message errors))))
+    (let (msgs)
+      (dolist (err errors)
+        (let* ((level (flycheck-error-level err))
+               (face (if (eq level 'info) 'success level))
+               (msg (flycheck-error-message err)))
+          (add-face-text-property 0 (length msg) face nil msg)
+          (push msg msgs)))
+      (funcall sideline-flycheck--callback msgs))))
 
 (defun sideline-flycheck--reset ()
   "After sideline is reset."

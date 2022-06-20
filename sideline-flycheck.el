@@ -98,7 +98,7 @@ Argument COMMAND is required in sideline backend."
     (setq-local flycheck-display-errors-function sideline-flycheck--old-display-function)
     (setq sideline-flycheck--old-display-function nil)
     (remove-hook 'sideline-reset-hook #'sideline-flycheck--reset t)
-    (sideline-render))))  ; rerender sideline once
+    (sideline-render))))  ; update sideline once
 
 (provide 'sideline-flycheck)
 ;;; sideline-flycheck.el ends here

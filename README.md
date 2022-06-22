@@ -4,7 +4,7 @@
 # sideline-flycheck
 > Show flycheck errors with sideline
 
-[![CI](https://github.com/jcs-elpa/sideline-flycheck/actions/workflows/test.yml/badge.svg)](https://github.com/jcs-elpa/sideline-flycheck/actions/workflows/test.yml)
+[![CI](https://github.com/emacs-sideline/sideline-flycheck/actions/workflows/test.yml/badge.svg)](https://github.com/emacs-sideline/sideline-flycheck/actions/workflows/test.yml)
 
 ## 🔨 Quickstart
 

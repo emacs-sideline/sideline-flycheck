@@ -2,7 +2,7 @@
          "0.1.0"
          "Show flycheck errors with sideline")
 
-(website-url "https://github.com/jcs-elpa/sideline-flycheck")
+(website-url "https://github.com/emacs-sideline/sideline-flycheck")
 (keywords "sideline" "flycheck")
 
 (package-file "sideline-flycheck.el")

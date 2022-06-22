@@ -4,7 +4,7 @@
 ;; Created date 2022-06-14 17:10:48
 
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>
-;; URL: https://github.com/jcs-elpa/sideline-flycheck
+;; URL: https://github.com/emacs-sideline/sideline-flycheck
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "26.1") (sideline "0.1.1") (flycheck "0.14"))
 ;; Keywords: sideline flycheck
@@ -40,7 +40,7 @@
   "Show flycheck errors with sideline."
   :prefix "sideline-flycheck-"
   :group 'tool
-  :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/sideline-flycheck"))
+  :link '(url-link :tag "Repository" "https://github.com/emacs-sideline/sideline-flycheck"))
 
 (defcustom sideline-flycheck-inhibit-functions nil
   "Functions to inhibit display of sideline flycheck."

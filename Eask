@@ -3,7 +3,7 @@
          "Show flycheck errors with sideline")
 
 (website-url "https://github.com/emacs-sideline/sideline-flycheck")
-(keywords "sideline" "flycheck")
+(keywords "convenience" "flycheck")
 
 (package-file "sideline-flycheck.el")
 

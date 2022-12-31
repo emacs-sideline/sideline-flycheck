@@ -1,6 +1,6 @@
 ;;; sideline-flycheck.el --- Show flycheck errors with sideline  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022  Shen, Jen-Chieh
+;; Copyright (C) 2022-2023  Shen, Jen-Chieh
 ;; Created date 2022-06-14 17:10:48
 
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>

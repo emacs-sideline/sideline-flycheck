@@ -11,13 +11,20 @@
 ## 🔨 Quickstart
 
 ```elisp
-(leaf sideline
-  :hook (flycheck-mode-hook . sideline-mode)
+(use-package sideline
+  :hook (flycheck-mode . sideline-mode)
   :init
   (setq sideline-backends-right '(sideline-flycheck)))
 
-(leaf sideline-flycheck :hook (flycheck-mode-hook . sideline-flycheck-setup))
+(use-package sideline-flycheck :hook (flycheck-mode . sideline-flycheck-setup))
 ```
+
+## 🔧 Customization
+
+#### 🧪 Variables
+
+- `sideline-flycheck-inhibit-functions` - Functions to inhibit display of sideline flycheck.
+- `sideline-flycheck-show-checker-name` - If non-nil, show checker name at the back.
 
 ## Contribute
 

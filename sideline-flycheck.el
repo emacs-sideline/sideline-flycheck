@@ -56,6 +56,11 @@
   :type 'hook
   :group 'sideline-flycheck)
 
+(defcustom sideline-flycheck-show-checker-name nil
+  "If non-nil, show checker name at the back."
+  :type 'boolean
+  :group 'sideline-flycheck)
+
 (defvar-local sideline-flycheck--old-display-function nil
   "The former value of `flycheck-display-errors-function'.")
 
@@ -63,7 +68,7 @@
   "Callback to display errors with sideline.")
 
 (defvar-local sideline-flycheck--errors (ht-create)
-  "Set to t when ready to do next rendering in sideline.")
+  "Store error messages as key.")
 
 ;;;###autoload
 (defun sideline-flycheck (command)
@@ -84,10 +89,13 @@ Argument COMMAND is required in sideline backend."
       (dolist (err errors)
         (let* ((level (flycheck-error-level err))
                (face (if (eq level 'info) 'success level))
-               (msg (flycheck-error-message err)))
+               (msg (flycheck-error-message err))
+               (checker (flycheck-error-checker err)))
+          (when sideline-flycheck-show-checker-name
+            (setq msg (format "%s (%s)" msg checker)))
           (add-face-text-property 0 (length msg) face nil msg)
           (unless (ht-contains-p sideline-flycheck--errors msg)
-            (ht-set sideline-flycheck--errors msg nil)
+            (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
             (push msg msgs))))
       (funcall sideline-flycheck--callback msgs))))
 

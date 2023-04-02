@@ -57,8 +57,13 @@
   :group 'sideline-flycheck)
 
 (defcustom sideline-flycheck-show-checker-name nil
-  "If non-nil, show checker name at the back."
+  "If non-nil, show the checker's name at the back."
   :type 'boolean
+  :group 'sideline-flycheck)
+
+(defcustom sideline-flycheck-max-lines 1
+  "Maximum number of lines to show."
+  :type 'integer
   :group 'sideline-flycheck)
 
 (defvar-local sideline-flycheck--old-display-function nil
@@ -90,6 +95,9 @@ Argument COMMAND is required in sideline backend."
         (let* ((level (flycheck-error-level err))
                (face (if (eq level 'info) 'success level))
                (msg (flycheck-error-message err))
+               (lines (split-string msg "\n"))
+               (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))
+               (msg (mapconcat #'identity lines "\n"))
                (checker (flycheck-error-checker err)))
           (when sideline-flycheck-show-checker-name
             (setq msg (format "%s (%s)" msg checker)))

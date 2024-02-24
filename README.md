@@ -13,7 +13,7 @@
 ## 🔨 Quickstart
 
 ```elisp
-(use-package sideline
+(use-package sideline-flycheck
   :hook (flycheck-mode . sideline-mode)
   :init
   (setq sideline-backends-right '(sideline-flycheck)))

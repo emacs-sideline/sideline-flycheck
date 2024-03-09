@@ -25,7 +25,7 @@
 
 #### 🧪 Variables
 
-- `sideline-flycheck-inhibit-functions` - Functions to inhibit display of sideline flycheck.
+- `sideline-flycheck-display-mode` - Method type to when sideline will display flycheck's errors.
 - `sideline-flycheck-show-checker-name` - If non-nil, show the checker's name at the back.
 - `sideline-flycheck-max-lines` - Maximum number of lines to show.
 

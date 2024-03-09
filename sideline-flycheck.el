@@ -51,9 +51,10 @@
   :group 'tool
   :link '(url-link :tag "Repository" "https://github.com/emacs-sideline/sideline-flycheck"))
 
-(defcustom sideline-flycheck-inhibit-functions nil
-  "Functions to inhibit display of sideline flycheck."
-  :type 'hook
+(defcustom sideline-flycheck-display-mode 'point
+  "Method type to when sideline will display flycheck's errors."
+  :type '(choice (const line)
+                 (const point))
   :group 'sideline-flycheck)
 
 (defcustom sideline-flycheck-show-checker-name nil
@@ -66,11 +67,11 @@
   :type 'integer
   :group 'sideline-flycheck)
 
-(defvar-local sideline-flycheck--old-display-function nil
-  "The former value of `flycheck-display-errors-function'.")
-
 (defvar-local sideline-flycheck--callback nil
   "Callback to display errors with sideline.")
+
+(defvar-local sideline-flycheck--timer nil
+  "Timer to display diagnostics.")
 
 (defvar-local sideline-flycheck--errors (ht-create)
   "Store error messages as key.")
@@ -85,11 +86,21 @@ Argument COMMAND is required in sideline backend."
                        (lambda (callback &rest _)
                          (setq sideline-flycheck--callback callback))))))
 
-(defun sideline-flycheck--show (errors)
-  "Display ERRORS, using sideline.el library."
-  (when (and errors
-             (not (run-hook-with-args-until-success 'sideline-flycheck-inhibit-functions))
-             sideline-flycheck--callback)
+(defun sideline-flycheck--get-errors ()
+  "Return flycheck errors."
+  (cl-case sideline-flycheck-display-mode
+    (`point (flycheck-overlay-errors-at (point)))
+    (`line (flycheck-overlay-errors-in (line-beginning-position) (1+ (line-end-position))))
+    (t (user-error "Invalid value of `sideline-flycheck-display-mode': %s"
+                   sideline-flycheck-display-mode))))
+
+(defun sideline-flycheck--show (&optional buffer)
+  "Display ERRORS in BUFFER, using sideline library."
+  (when-let ((sideline-mode)
+             (buffer (or buffer (current-buffer)))
+             ((eq buffer (current-buffer)))
+             (errors (sideline-flycheck--get-errors))
+             (sideline-flycheck--callback))
     (let (msgs)
       (dolist (err errors)
         (let* ((level (flycheck-error-level err))
@@ -107,6 +118,13 @@ Argument COMMAND is required in sideline backend."
             (push msg msgs))))
       (funcall sideline-flycheck--callback msgs))))
 
+(defun sideline-flycheck--post-command ()
+  "Display error message at point with a delay, unless already displayed."
+  (when (timerp sideline-flycheck--timer) (cancel-timer sideline-flycheck--timer))
+  (setq sideline-flycheck--timer
+        (run-at-time flycheck-display-errors-delay nil
+                     #'sideline-flycheck--show (current-buffer))))
+
 (defun sideline-flycheck--reset ()
   "After sideline is reset."
   (ht-clear sideline-flycheck--errors))
@@ -116,12 +134,12 @@ Argument COMMAND is required in sideline backend."
   "Setup for `flycheck-mode'."
   (cond
    (flycheck-mode
-    (setq sideline-flycheck--old-display-function flycheck-display-errors-function)
-    (setq-local flycheck-display-errors-function #'sideline-flycheck--show)
+    (add-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--show nil t)
+    (add-hook 'post-command-hook #'sideline-flycheck--post-command nil t)
     (add-hook 'sideline-reset-hook #'sideline-flycheck--reset nil t))
    (t
-    (setq-local flycheck-display-errors-function sideline-flycheck--old-display-function)
-    (setq sideline-flycheck--old-display-function nil)
+    (remove-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--show t)
+    (remove-hook 'post-command-hook #'sideline-flycheck--post-command t)
     (remove-hook 'sideline-reset-hook #'sideline-flycheck--reset t)
     (sideline-render))))  ; update sideline once
 

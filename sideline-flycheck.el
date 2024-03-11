@@ -96,6 +96,7 @@ Argument COMMAND is required in sideline backend."
 
 (defun sideline-flycheck--show (&optional buffer)
   "Display ERRORS in BUFFER, using sideline library."
+  (sideline-delete-ovs 'sideline-flycheck)
   (when-let ((sideline-mode)
              (buffer (or buffer (current-buffer)))
              ((eq buffer (current-buffer)))

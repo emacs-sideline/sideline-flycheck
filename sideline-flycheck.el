@@ -96,7 +96,6 @@ Argument COMMAND is required in sideline backend."
 
 (defun sideline-flycheck--show (&optional buffer)
   "Display ERRORS in BUFFER, using sideline library."
-  (sideline-delete-ovs 'sideline-flycheck)
   (when-let ((sideline-mode)
              (buffer (or buffer (current-buffer)))
              ((eq buffer (current-buffer)))
@@ -118,6 +117,7 @@ Argument COMMAND is required in sideline backend."
           (unless (ht-contains-p sideline-flycheck--errors msg)
             (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
             (push msg msgs))))
+      (sideline-delete-ovs 'sideline-flycheck)
       (funcall sideline-flycheck--callback msgs)
       ;; XXX: We need to set it to `nil', or else it will render multiple times.
       (setq sideline-flycheck--callback nil))))

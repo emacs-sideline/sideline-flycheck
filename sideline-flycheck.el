@@ -117,7 +117,6 @@ Argument COMMAND is required in sideline backend."
           (unless (ht-contains-p sideline-flycheck--errors msg)
             (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
             (push msg msgs))))
-      (sideline-delete-ovs 'sideline-flycheck)
       (funcall sideline-flycheck--callback msgs)
       ;; XXX: We need to set it to `nil', or else it will render multiple times.
       (setq sideline-flycheck--callback nil))))
@@ -129,6 +128,11 @@ Argument COMMAND is required in sideline backend."
         (run-at-time flycheck-display-errors-delay nil
                      #'sideline-flycheck--show (current-buffer))))
 
+(defun sideline-flycheck--after-check ()
+  "Run after syntax check."
+  (sideline-delete-ovs 'sideline-flycheck)
+  (sideline-flycheck--show))
+
 (defun sideline-flycheck--reset ()
   "After sideline is reset."
   (ht-clear sideline-flycheck--errors))
@@ -138,11 +142,11 @@ Argument COMMAND is required in sideline backend."
   "Setup for `flycheck-mode'."
   (cond
    (flycheck-mode
-    (add-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--show nil t)
+    (add-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--after-check nil t)
     (add-hook 'post-command-hook #'sideline-flycheck--post-command nil t)
     (add-hook 'sideline-reset-hook #'sideline-flycheck--reset nil t))
    (t
-    (remove-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--show t)
+    (remove-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--after-check t)
     (remove-hook 'post-command-hook #'sideline-flycheck--post-command t)
     (remove-hook 'sideline-reset-hook #'sideline-flycheck--reset t)
     (sideline-render))))  ; update sideline once

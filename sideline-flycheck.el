@@ -116,7 +116,8 @@ Argument COMMAND is required in sideline backend."
           (unless (ht-contains-p sideline-flycheck--errors msg)
             (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
             (push msg msgs))))
-      (funcall sideline-flycheck--callback msgs))))
+      (funcall sideline-flycheck--callback msgs)
+      (setq sideline-flycheck--callback nil))))
 
 (defun sideline-flycheck--post-command ()
   "Display error message at point with a delay, unless already displayed."

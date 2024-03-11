@@ -14,6 +14,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Add option to display checker name (1f2f82d4383718a8dd2aff40cffafce4a8d0aca1)
 * feat: Add custom variable for max lines (#3)
 * feat: Add option to get diagnostics for the whole line (#5)
+* fix: Update sideline in realtime (ca25272098d2068fe2db49701fa517894f418f0e)
 
 ## 0.1.0
 > Released Jun 14, 2022

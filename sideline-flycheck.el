@@ -116,6 +116,7 @@ Argument COMMAND is required in sideline backend."
           (add-face-text-property 0 (length msg) face nil msg)
           (unless (ht-contains-p sideline-flycheck--errors msg)
             (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
+            (message "render")
             (push msg msgs))))
       (funcall sideline-flycheck--callback msgs)
       ;; XXX: We need to set it to `nil', or else it will render multiple times.
@@ -123,10 +124,16 @@ Argument COMMAND is required in sideline backend."
 
 (defun sideline-flycheck--post-command ()
   "Display error message at point with a delay, unless already displayed."
-  (when (timerp sideline-flycheck--timer) (cancel-timer sideline-flycheck--timer))
-  (setq sideline-flycheck--timer
-        (run-at-time flycheck-display-errors-delay nil
-                     #'sideline-flycheck--show (current-buffer))))
+  ;; XXX: Run only when the errors exist!
+  ;;
+  ;; We need this to prevent overlays being deleted from the function
+  ;; `sideline-flycheck--after-check'. Another way to interpret this, is to
+  ;; check if flycheck is currently doing the syntax check.
+  (when (sideline-flycheck--get-errors)
+    (when (timerp sideline-flycheck--timer) (cancel-timer sideline-flycheck--timer))
+    (setq sideline-flycheck--timer
+          (run-at-time flycheck-display-errors-delay nil
+                       #'sideline-flycheck--show (current-buffer)))))
 
 (defun sideline-flycheck--after-check ()
   "Run after syntax check."

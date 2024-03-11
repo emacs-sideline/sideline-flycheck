@@ -116,7 +116,6 @@ Argument COMMAND is required in sideline backend."
           (add-face-text-property 0 (length msg) face nil msg)
           (unless (ht-contains-p sideline-flycheck--errors msg)
             (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
-            (message "render")
             (push msg msgs))))
       (funcall sideline-flycheck--callback msgs)
       ;; XXX: We need to set it to `nil', or else it will render multiple times.

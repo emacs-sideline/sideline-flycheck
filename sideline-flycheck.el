@@ -100,6 +100,7 @@ Argument COMMAND is required in sideline backend."
              (buffer (or buffer (current-buffer)))
              ((eq buffer (current-buffer)))
              (errors (sideline-flycheck--get-errors))
+             ;; XXX: Prevent render multiple times.
              (sideline-flycheck--callback))
     (let (msgs)
       (dolist (err errors)
@@ -117,6 +118,7 @@ Argument COMMAND is required in sideline backend."
             (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
             (push msg msgs))))
       (funcall sideline-flycheck--callback msgs)
+      ;; XXX: We need to set it to `nil', or else it will render multiple times.
       (setq sideline-flycheck--callback nil))))
 
 (defun sideline-flycheck--post-command ()

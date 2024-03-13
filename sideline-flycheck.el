@@ -96,30 +96,28 @@ Argument COMMAND is required in sideline backend."
 
 (defun sideline-flycheck--show (&optional buffer)
   "Display ERRORS in BUFFER, using sideline library."
-  (when-let ((sideline-mode)
-             (buffer (or buffer (current-buffer)))
-             ((eq buffer (current-buffer)))
-             (errors (sideline-flycheck--get-errors))
-             ;; XXX: Prevent render multiple times.
-             (sideline-flycheck--callback))
-    (let (msgs)
-      (dolist (err errors)
-        (let* ((level (flycheck-error-level err))
-               (face (if (eq level 'info) 'success level))
-               (msg (flycheck-error-message err))
-               (lines (split-string msg "\n"))
-               (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))
-               (msg (mapconcat #'identity lines "\n"))
-               (checker (flycheck-error-checker err)))
-          (when sideline-flycheck-show-checker-name
-            (setq msg (format "%s (%s)" msg checker)))
-          (add-face-text-property 0 (length msg) face nil msg)
-          (unless (ht-contains-p sideline-flycheck--errors msg)
-            (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
-            (push msg msgs))))
-      (funcall sideline-flycheck--callback msgs)
-      ;; XXX: We need to set it to `nil', or else it will render multiple times.
-      (setq sideline-flycheck--callback nil))))
+  (sideline--with-buffer (or buffer (current-buffer))
+    (when-let ((sideline-mode)
+               (errors (sideline-flycheck--get-errors))
+               (sideline-flycheck--callback)  ; Make sure callback exists
+               ;; XXX: Prevnet duplicate.
+               ((not (sideline-backend-ovs 'sideline-flycheck))))
+      (let (msgs)
+        (dolist (err errors)
+          (let* ((level (flycheck-error-level err))
+                 (face (if (eq level 'info) 'success level))
+                 (msg (flycheck-error-message err))
+                 (lines (split-string msg "\n"))
+                 (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))
+                 (msg (mapconcat #'identity lines "\n"))
+                 (checker (flycheck-error-checker err)))
+            (when sideline-flycheck-show-checker-name
+              (setq msg (format "%s (%s)" msg checker)))
+            (add-face-text-property 0 (length msg) face nil msg)
+            (unless (ht-contains-p sideline-flycheck--errors msg)
+              (ht-set sideline-flycheck--errors msg nil)  ; doesn't care about value
+              (push msg msgs))))
+        (funcall sideline-flycheck--callback msgs)))))
 
 (defun sideline-flycheck--post-command ()
   "Display error message at point with a delay, unless already displayed."
@@ -134,14 +132,15 @@ Argument COMMAND is required in sideline backend."
           (run-at-time flycheck-display-errors-delay nil
                        #'sideline-flycheck--show (current-buffer)))))
 
-(defun sideline-flycheck--after-check ()
-  "Run after syntax check."
-  (sideline-delete-ovs 'sideline-flycheck)
-  (sideline-flycheck--show))
-
 (defun sideline-flycheck--reset ()
   "After sideline is reset."
   (ht-clear sideline-flycheck--errors))
+
+(defun sideline-flycheck--after-check ()
+  "Run after syntax check."
+  (sideline-delete-backend-ovs 'sideline-flycheck)
+  (sideline-flycheck--reset)
+  (sideline-flycheck--show))
 
 ;;;###autoload
 (defun sideline-flycheck-setup ()

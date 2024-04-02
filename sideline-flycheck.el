@@ -156,8 +156,7 @@ Argument COMMAND is required in sideline backend."
    (t
     (remove-hook 'flycheck-after-syntax-check-hook #'sideline-flycheck--after-check t)
     (remove-hook 'post-command-hook #'sideline-flycheck--post-command t)
-    (remove-hook 'sideline-reset-hook #'sideline-flycheck--reset t)
-    (sideline-render))))  ; update sideline once
+    (remove-hook 'sideline-reset-hook #'sideline-flycheck--reset t))))
 
 (provide 'sideline-flycheck)
 ;;; sideline-flycheck.el ends here

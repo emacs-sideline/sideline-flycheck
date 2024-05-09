@@ -16,6 +16,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * feat: Add option to get diagnostics for the whole line (#5)
 * fix: Update sideline in realtime (ca25272098d2068fe2db49701fa517894f418f0e)
 * fix: Avoid invalid face reference from `lsp-flycheck-info-unnecessary` (991ae72dc0599f7c336be56fdb4b4e61aff24df7)
+* feat: Add custom faces (f809e627e433bd9a58471e4dea1ed50305eef7f2)
 
 ## 0.1.0
 > Released Jun 14, 2022

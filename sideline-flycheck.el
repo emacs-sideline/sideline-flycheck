@@ -76,6 +76,21 @@
 (defvar-local sideline-flycheck--errors (ht-create)
   "Store error messages as key.")
 
+(defface sideline-flycheck-error
+  `((t :inherit error))
+  "Indicate error operation."
+  :group 'sideline-flycheck)
+
+(defface sideline-flycheck-warning
+  `((t :inherit warning))
+  "Indicate warning operation."
+  :group 'sideline-flycheck)
+
+(defface sideline-flycheck-success
+  `((t :inherit success))
+  "Indicate successful operation."
+  :group 'sideline-flycheck)
+
 ;;;###autoload
 (defun sideline-flycheck (command)
   "Backend for sideline.
@@ -106,9 +121,9 @@ Argument COMMAND is required in sideline backend."
         (dolist (err errors)
           (let* ((level (sideline-2str (flycheck-error-level err)))
                  (face (cond
-                        ((string-match-p "warning" level) 'warning)
-                        ((string-match-p "error" level) 'error)
-                        (t 'success)))
+                        ((string-match-p "warning" level) 'sideline-flycheck-warning)
+                        ((string-match-p "error" level) 'sideline-flycheck-error)
+                        (t 'sideline-flycheck-success)))
                  (msg (flycheck-error-message err))
                  (lines (split-string msg "\n"))
                  (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))

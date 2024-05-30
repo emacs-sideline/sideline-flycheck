@@ -147,7 +147,9 @@ Argument COMMAND is required in sideline backend."
   (when (sideline-flycheck--get-errors)
     (when (timerp sideline-flycheck--timer) (cancel-timer sideline-flycheck--timer))
     (setq sideline-flycheck--timer
-          (run-at-time flycheck-display-errors-delay nil
+          (run-at-time (or flycheck-display-errors-delay
+                           (default-value 'flycheck-display-errors-delay))
+                       nil
                        #'sideline-flycheck--show (current-buffer)))))
 
 (defun sideline-flycheck--reset ()

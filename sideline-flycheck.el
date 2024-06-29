@@ -111,7 +111,7 @@ Argument COMMAND is required in sideline backend."
 
 (defun sideline-flycheck--show (&optional buffer)
   "Display ERRORS in BUFFER, using sideline library."
-  (sideline--with-buffer (or buffer (current-buffer))
+  (sideline--with-buffer-window (or buffer (current-buffer))
     (when-let ((sideline-mode)
                (errors (sideline-flycheck--get-errors))
                (sideline-flycheck--callback)  ; Make sure callback exists

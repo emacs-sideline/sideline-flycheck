@@ -3,6 +3,7 @@
 [![MELPA](https://melpa.org/packages/sideline-flycheck-badge.svg)](https://melpa.org/#/sideline-flycheck)
 [![MELPA Stable](https://stable.melpa.org/packages/sideline-flycheck-badge.svg)](https://stable.melpa.org/#/sideline-flycheck)
 
+<a href="#"><img align="right" src="https://raw.githubusercontent.com/emacs-sideline/sideline/master/etc/logo.png" width="20%"></a>
 # sideline-flycheck
 > Show flycheck errors with sideline
 

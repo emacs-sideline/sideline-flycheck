@@ -16,7 +16,7 @@
 (source-priority "melpa"    5)
 (source-priority "jcs-elpa" 10)
 
-(depends-on "emacs" "27.1")
+(depends-on "emacs" "28.1")
 (depends-on "sideline")
 (depends-on "flycheck")
 (depends-on "ht")

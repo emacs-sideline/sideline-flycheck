@@ -6,7 +6,7 @@
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/emacs-sideline/sideline-flycheck
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "27.1") (sideline "0.1.1") (flycheck "0.14") (ht "2.4"))
+;; Package-Requires: ((emacs "28.1") (sideline "0.1.1") (flycheck "0.14") (ht "2.4"))
 ;; Keywords: convenience flycheck
 
 ;; This file is NOT part of GNU Emacs.

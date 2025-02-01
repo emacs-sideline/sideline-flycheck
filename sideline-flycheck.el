@@ -40,6 +40,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'pcase)
 
 (require 'sideline)
 (require 'flycheck)
@@ -91,6 +92,24 @@
   "Indicate info operation."
   :group 'sideline-flycheck)
 
+(defcustom sideline-flycheck-error-prefix ""
+  "Prefix for error sideline."
+  :type 'string
+  :group 'sideline-flycheck)
+
+(defcustom sideline-flycheck-warning-prefix ""
+  "Prefix for warning sideline."
+  :type 'string
+  :group 'sideline-flycheck)
+
+(defcustom sideline-flycheck-info-prefix ""
+  "Prefix for info sideline."
+  :type 'string
+  :group 'sideline-flycheck)
+
+;;
+;;; Core
+
 ;;;###autoload
 (defun sideline-flycheck (command)
   "Backend for sideline.
@@ -109,6 +128,13 @@ Argument COMMAND is required in sideline backend."
     (t (user-error "Invalid value of `sideline-flycheck-display-mode': %s"
                    sideline-flycheck-display-mode))))
 
+;; XXX: Not sure if needed.
+(defun sideline-flycheck--get-level (level)
+  "Return level symbol by LEVEL."
+  (cond ((string-match-p "warning" level) 'warning)
+        ((string-match-p "error" level) 'error)
+        (t 'info)))
+
 (defun sideline-flycheck--show (&optional buffer)
   "Display ERRORS in BUFFER, using sideline library."
   (sideline--with-buffer-window (or buffer (current-buffer))
@@ -120,14 +146,21 @@ Argument COMMAND is required in sideline backend."
       (let (msgs)
         (dolist (err errors)
           (let* ((level (sideline-2str (flycheck-error-level err)))
-                 (face (cond
-                        ((string-match-p "warning" level) 'sideline-flycheck-warning)
-                        ((string-match-p "error" level) 'sideline-flycheck-error)
-                        (t 'sideline-flycheck-info)))
+                 ;; XXX: Safety guard; is this necessary?
+                 (level (sideline-flycheck--get-level level))
+                 (face (pcase level
+                         (`warning 'sideline-flycheck-warning)
+                         (`error   'sideline-flycheck-error)
+                         (`info    'sideline-flycheck-info)))
+                 (prefix (pcase level
+                           (`warning sideline-flycheck-warning-prefix)
+                           (`error   sideline-flycheck-error-prefix)
+                           (`info    sideline-flycheck-info-prefix)))
                  (msg (flycheck-error-message err))
                  (lines (split-string msg "\n"))
                  (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))
                  (msg (mapconcat #'identity lines "\n"))
+                 (msg (concat prefix msg))
                  (checker (flycheck-error-checker err)))
             (when sideline-flycheck-show-checker-name
               (setq msg (format "%s (%s)" msg checker)))

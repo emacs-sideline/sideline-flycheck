@@ -86,9 +86,9 @@
   "Indicate warning operation."
   :group 'sideline-flycheck)
 
-(defface sideline-flycheck-success
+(defface sideline-flycheck-info
   `((t :inherit success))
-  "Indicate successful operation."
+  "Indicate info operation."
   :group 'sideline-flycheck)
 
 ;;;###autoload
@@ -123,7 +123,7 @@ Argument COMMAND is required in sideline backend."
                  (face (cond
                         ((string-match-p "warning" level) 'sideline-flycheck-warning)
                         ((string-match-p "error" level) 'sideline-flycheck-error)
-                        (t 'sideline-flycheck-success)))
+                        (t 'sideline-flycheck-info)))
                  (msg (flycheck-error-message err))
                  (lines (split-string msg "\n"))
                  (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))

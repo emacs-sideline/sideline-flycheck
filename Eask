@@ -1,5 +1,5 @@
 (package "sideline-flycheck"
-         "0.1.0"
+         "0.2.0"
          "Show flycheck errors with sideline")
 
 (website-url "https://github.com/emacs-sideline/sideline-flycheck")

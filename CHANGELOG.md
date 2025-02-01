@@ -5,8 +5,13 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
-## 0.1.1 (Unreleased)
+## 0.3.0 (Unreleased)
 > Released N/A
+
+* N/A
+
+## 0.2.0
+> Released Feb 01, 2025
 
 * Fix bug rendering messages twice (52801f817c257955f82a37108044b68ae8833190)
 * Rerender sideline after `flycheck-mode` is disabled (52801f817c257955f82a37108044b68ae8833190)
@@ -17,6 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * fix: Update sideline in realtime (ca25272098d2068fe2db49701fa517894f418f0e)
 * fix: Avoid invalid face reference from `lsp-flycheck-info-unnecessary` (991ae72dc0599f7c336be56fdb4b4e61aff24df7)
 * feat: Add custom faces (f809e627e433bd9a58471e4dea1ed50305eef7f2)
+* feat: Add prefix for diagnostic levels (dc76769a91736e91fcda1fc01ba1567dc4a3dbaa)
 
 ## 0.1.0
 > Released Jun 14, 2022

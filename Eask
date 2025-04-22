@@ -1,3 +1,5 @@
+;; -*- mode: eask; lexical-binding: t -*-
+
 (package "sideline-flycheck"
          "0.2.0"
          "Show flycheck errors with sideline")

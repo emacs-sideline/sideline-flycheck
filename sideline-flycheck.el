@@ -63,6 +63,15 @@
   :type 'boolean
   :group 'sideline-flycheck)
 
+(defcustom sideline-flycheck-show-error-id nil
+  "If non-nil, append the diagnostic ID to the error message.
+
+For LSP-backed diagnostics this surfaces codes such as
+\"reportUnusedExpression\" or \"E501\" alongside the message,
+formatted via `flycheck-error-format-message-and-id'."
+  :type 'boolean
+  :group 'sideline-flycheck)
+
 (defcustom sideline-flycheck-max-lines 1
   "Maximum number of lines to show."
   :type 'integer
@@ -156,7 +165,9 @@ Argument COMMAND is required in sideline backend."
                            (`warning sideline-flycheck-warning-prefix)
                            (`error   sideline-flycheck-error-prefix)
                            (`info    sideline-flycheck-info-prefix)))
-                 (msg (flycheck-error-message err))
+                 (msg (if sideline-flycheck-show-error-id
+                          (flycheck-error-format-message-and-id err)
+                        (flycheck-error-message err)))
                  (lines (split-string msg "\n"))
                  (lines (butlast lines (- (length lines) sideline-flycheck-max-lines)))
                  (msg (mapconcat #'identity lines "\n"))

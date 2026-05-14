@@ -28,6 +28,7 @@
 
 - `sideline-flycheck-display-mode` - Method type to when sideline will display flycheck's errors.
 - `sideline-flycheck-show-checker-name` - If non-nil, show the checker's name at the back.
+- `sideline-flycheck-show-error-id` - If non-nil, append the diagnostic ID (e.g. `reportUnusedExpression`, `E501`) to the error message`.
 - `sideline-flycheck-max-lines` - Maximum number of lines to show.
 
 ## 🛠️ Contribute
